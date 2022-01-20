@@ -6,6 +6,7 @@ using UnityEngine;
 public class TimeRecorder : MonoBehaviour
 {
     public List<Point> allPointsInTime;
+    public List<string> allPointsFiltered;
     public TimeStone timeStone;
     // Start is called before the first frame update
     void Start()
@@ -13,13 +14,16 @@ public class TimeRecorder : MonoBehaviour
         allPointsInTime = new List<Point>();
         timeStone = GameObject.Find("Time Stone").GetComponent<TimeStone>();
         allPointsInTime.Add(new Point(-1, transform));
-        allPointsInTime.Add(new Point(timeStone.time, transform));
+        allPointsInTime.Add(new Point(0, transform));
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        allPointsFiltered.Clear();
+        foreach (Point point in allPointsInTime) {
+            allPointsFiltered.Add("Time:"+point.time);
+        }
     }
     void FixedUpdate() {
         
@@ -27,14 +31,15 @@ public class TimeRecorder : MonoBehaviour
 
         if(timeStone.isControlling) {
             Point determinedSpot = getPointAtTime(timeStone.time);
-            transform.position = determinedSpot.position;
-            transform.rotation = Quaternion.Euler(determinedSpot.rotation);
+            Debug.Log(determinedSpot.gameObject.position);
+            // transform.position = determinedSpot.gameObject.position;
+            // transform.position = determinedSpot.gameObject.position;
         } else {
             while(allPointsInTime[allPointsInTime.Count-1].time > timeStone.time) {
                 allPointsInTime.RemoveAt(allPointsInTime.Count-1);
             }
-            if(allPointsInTime[allPointsInTime.Count-1].position != transform.position || allPointsInTime[allPointsInTime.Count-1].rotation != transform.localRotation.eulerAngles) {
-                
+            if(!isObjectSame(allPointsInTime[allPointsInTime.Count-1].gameObject, transform)) {
+                Debug.Log("added");
                 allPointsInTime.Add(new Point(timeStone.time, transform));
             }
         }
@@ -52,5 +57,10 @@ public class TimeRecorder : MonoBehaviour
     void toggleAllElements(bool status) {
         transform.gameObject.GetComponent<Rigidbody>().useGravity = status;
         transform.gameObject.GetComponent<Rigidbody>().isKinematic = !status;
+    }
+
+    bool isObjectSame(Transform object1, Transform object2) {
+        return  object1.position == object2.position && 
+                object1.rotation == object2.rotation;
     }
 }

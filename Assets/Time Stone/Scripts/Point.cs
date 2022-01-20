@@ -4,11 +4,9 @@ using UnityEngine;
 
 public class Point {
     public int time;
-    public Vector3 position;
-    public Vector3 rotation;
+    public Transform gameObject;
     public Point(int time, Transform gameobject) {
         this.time = time;
-        this.position = gameobject.position;
-        this.rotation = gameobject.localRotation.eulerAngles;
+        this.gameObject = gameObject;
     }
 }
