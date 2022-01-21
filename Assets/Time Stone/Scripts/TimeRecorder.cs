@@ -6,12 +6,10 @@ using UnityEngine;
 public class TimeRecorder : MonoBehaviour
 {
     public List<Point> allPointsInTime;
-    public Rigidbody oldRB;
     public bool lastStatus = false;
     public TimeStone timeStone;
     void Start()
     {
-        oldRB = transform.gameObject.GetComponent<Rigidbody>();
         allPointsInTime = new List<Point>();
         timeStone = GameObject.Find("Time Stone").GetComponent<TimeStone>();
         allPointsInTime.Add(new Point(-1, transform, transform.gameObject.GetComponent<Rigidbody>()));
@@ -21,10 +19,20 @@ public class TimeRecorder : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(allPointsInTime[allPointsInTime.Count-1].velocity);
-        Debug.Log(allPointsInTime[allPointsInTime.Count-1].angularVelocity);
+
     }
     void FixedUpdate() {
+
+        if(timeStone.isControlling != lastStatus) {
+            if(!timeStone.isControlling) {
+                Point determinedSpot = getPointAtTime(timeStone.time);
+                GetComponent<Rigidbody>().velocity = determinedSpot.velocity;
+                GetComponent<Rigidbody>().angularVelocity = determinedSpot.angularVelocity;
+            }
+        }
+        lastStatus = timeStone.isControlling;
+
+
 
         if(timeStone.isControlling) {
 
@@ -35,8 +43,7 @@ public class TimeRecorder : MonoBehaviour
             transform.position = determinedSpot.position;
             transform.rotation = determinedSpot.rotation;
             
-            GetComponent<Rigidbody>().velocity = determinedSpot.velocity;
-            GetComponent<Rigidbody>().angularVelocity = determinedSpot.angularVelocity;
+
 
         } else {
 

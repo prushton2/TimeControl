@@ -71,7 +71,7 @@ public class Player : MonoBehaviour
       timeStone.GetComponent<TimeStone>().IncrementTime(1);
     }
     if(Input.GetMouseButtonDown(0)) {
-      timeStone.GetComponent<TimeStone>().isControlling = !timeStone.GetComponent<TimeStone>().isControlling;
+      timeStone.GetComponent<TimeStone>().setIsControlling(!timeStone.GetComponent<TimeStone>().isControlling);
     }
 
 

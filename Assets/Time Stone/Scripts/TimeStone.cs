@@ -5,7 +5,9 @@ using UnityEngine;
 public class TimeStone : MonoBehaviour
 {
     public bool isControlling;
+    public bool justChanged;
     public int time = 0;
+    public int now;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,13 +26,12 @@ public class TimeStone : MonoBehaviour
         if(time<0) {
             time = 0;
         }
+        justChanged = false;
     }
 
-    void setIsControlling(bool status) {
+    public void setIsControlling(bool status) {
         isControlling = status;
-        if(status = true) {
-            
-        }
+        justChanged = true;
     }
 
     public void IncrementTime(int increment) {
