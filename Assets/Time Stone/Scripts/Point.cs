@@ -4,9 +4,18 @@ using UnityEngine;
 
 public class Point {
     public int time;
-    public Transform gameObject;
-    public Point(int time, Transform gameobject) {
+    public Vector3 position;
+    public Quaternion rotation;
+    public Vector3 velocity;
+    public Vector3 angularVelocity;
+
+    public Point(int time, Transform gameobject, Rigidbody rb) {
         this.time = time;
-        this.gameObject = gameObject;
+
+        this.position = gameobject.position;
+        this.rotation = gameobject.rotation;
+
+        this.velocity = rb.velocity;
+        this.angularVelocity = rb.angularVelocity;
     }
 }
