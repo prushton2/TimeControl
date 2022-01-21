@@ -6,14 +6,14 @@ using UnityEngine;
 public class TimeRecorder : MonoBehaviour
 {
     public List<Point> allPointsInTime;
+    public bool lastStatus = false;
     public TimeStone timeStone;
-    // Start is called before the first frame update
     void Start()
     {
         allPointsInTime = new List<Point>();
         timeStone = GameObject.Find("Time Stone").GetComponent<TimeStone>();
-        allPointsInTime.Add(new Point(-1, transform));
-        allPointsInTime.Add(new Point(timeStone.time, transform));
+        allPointsInTime.Add(new Point(-1, transform, transform.gameObject.GetComponent<Rigidbody>()));
+        allPointsInTime.Add(new Point(0, transform, transform.gameObject.GetComponent<Rigidbody>()));
     }
 
     // Update is called once per frame
@@ -22,20 +22,40 @@ public class TimeRecorder : MonoBehaviour
 
     }
     void FixedUpdate() {
-        
-        toggleAllElements(!timeStone.isControlling);
+
+        if(timeStone.isControlling != lastStatus) {
+            if(!timeStone.isControlling) {
+                Point determinedSpot = getPointAtTime(timeStone.time);
+                GetComponent<Rigidbody>().velocity = determinedSpot.velocity;
+                GetComponent<Rigidbody>().angularVelocity = determinedSpot.angularVelocity;
+            }
+        }
+        lastStatus = timeStone.isControlling;
+
+
 
         if(timeStone.isControlling) {
+
+            transform.gameObject.GetComponent<Rigidbody>().useGravity = false;
+            transform.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+
             Point determinedSpot = getPointAtTime(timeStone.time);
             transform.position = determinedSpot.position;
-            transform.rotation = Quaternion.Euler(determinedSpot.rotation);
+            transform.rotation = determinedSpot.rotation;
+            
+
+
         } else {
+
+            transform.gameObject.GetComponent<Rigidbody>().useGravity = true;
+            transform.gameObject.GetComponent<Rigidbody>().isKinematic = false;
+
             while(allPointsInTime[allPointsInTime.Count-1].time > timeStone.time) {
                 allPointsInTime.RemoveAt(allPointsInTime.Count-1);
             }
-            if(allPointsInTime[allPointsInTime.Count-1].position != transform.position || allPointsInTime[allPointsInTime.Count-1].rotation != transform.localRotation.eulerAngles) {
-                
-                allPointsInTime.Add(new Point(timeStone.time, transform));
+
+            if(!isPointSame(allPointsInTime[allPointsInTime.Count-1], transform)) {
+                allPointsInTime.Add(new Point(timeStone.time, transform, transform.gameObject.GetComponent<Rigidbody>()));
             }
         }
     }
@@ -49,8 +69,9 @@ public class TimeRecorder : MonoBehaviour
         return allPointsInTime[allPointsInTime.Count-1];
     }
 
-    void toggleAllElements(bool status) {
-        transform.gameObject.GetComponent<Rigidbody>().useGravity = status;
-        transform.gameObject.GetComponent<Rigidbody>().isKinematic = !status;
+
+    bool isPointSame(Point object1, Transform object2) {
+        return  object1.position == object2.position && 
+                object1.rotation == object2.rotation;
     }
 }
