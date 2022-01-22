@@ -5,11 +5,16 @@ using UnityEngine;
 
 public class TimeRecorder : MonoBehaviour
 {
+    public bool oldUseGravity;
+    public bool oldIsKinematic;   
     public List<Point> allPointsInTime;
     public bool lastStatus = false;
-    public TimeStone timeStone;
+    public TimeStone timeStone; 
+
     void Start()
     {
+        oldUseGravity  = transform.gameObject.GetComponent<Rigidbody>().useGravity;
+        oldIsKinematic = transform.gameObject.GetComponent<Rigidbody>().isKinematic;
         allPointsInTime = new List<Point>();
         timeStone = GameObject.Find("Time Stone").GetComponent<TimeStone>();
         allPointsInTime.Add(new Point(-1, transform, transform.gameObject.GetComponent<Rigidbody>()));
@@ -21,6 +26,7 @@ public class TimeRecorder : MonoBehaviour
     {
 
     }
+
     void FixedUpdate() {
 
         if(timeStone.isControlling != lastStatus) {
@@ -28,6 +34,16 @@ public class TimeRecorder : MonoBehaviour
                 Point determinedSpot = getPointAtTime(timeStone.time);
                 GetComponent<Rigidbody>().velocity = determinedSpot.velocity;
                 GetComponent<Rigidbody>().angularVelocity = determinedSpot.angularVelocity;
+
+                transform.gameObject.GetComponent<Rigidbody>().useGravity  = oldUseGravity;
+                transform.gameObject.GetComponent<Rigidbody>().isKinematic = oldIsKinematic;
+
+            } else {
+                oldUseGravity = transform.gameObject.GetComponent<Rigidbody>().useGravity;
+                oldIsKinematic  = transform.gameObject.GetComponent<Rigidbody>().isKinematic;
+
+                transform.gameObject.GetComponent<Rigidbody>().useGravity = false;
+                transform.gameObject.GetComponent<Rigidbody>().isKinematic = true;
             }
         }
         lastStatus = timeStone.isControlling;
@@ -36,19 +52,11 @@ public class TimeRecorder : MonoBehaviour
 
         if(timeStone.isControlling) {
 
-            transform.gameObject.GetComponent<Rigidbody>().useGravity = false;
-            transform.gameObject.GetComponent<Rigidbody>().isKinematic = true;
-
             Point determinedSpot = getPointAtTime(timeStone.time);
             transform.position = determinedSpot.position;
             transform.rotation = determinedSpot.rotation;
             
-
-
         } else {
-
-            transform.gameObject.GetComponent<Rigidbody>().useGravity = true;
-            transform.gameObject.GetComponent<Rigidbody>().isKinematic = false;
 
             while(allPointsInTime[allPointsInTime.Count-1].time > timeStone.time) {
                 allPointsInTime.RemoveAt(allPointsInTime.Count-1);
