@@ -15,9 +15,12 @@ public class Point {
         this.position = gameobject.position;
         this.rotation = gameobject.rotation;
         
-        if(rb == null) {
+        if(rb != null) {
             this.velocity = rb.velocity;
             this.angularVelocity = rb.angularVelocity;
+        } else {
+            this.velocity = new Vector3(0, 0, 0);
+            this.angularVelocity = new Vector3(0, 0, 0);
         }
     }
 }
