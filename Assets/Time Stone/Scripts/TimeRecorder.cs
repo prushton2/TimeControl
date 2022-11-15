@@ -9,63 +9,85 @@ public class TimeRecorder : MonoBehaviour
     public bool oldIsKinematic;   
     public List<Point> allPointsInTime;
     public bool lastStatus = false;
-    public TimeStone timeStone; 
+    public TimeStone timeController; 
+
+    public int length = 0;
+    public Point index;
 
     void Start()
     {
-        oldUseGravity  = transform.gameObject.GetComponent<Rigidbody>().useGravity;
-        oldIsKinematic = transform.gameObject.GetComponent<Rigidbody>().isKinematic;
+        //remember variables that will change
+        if(getrb() != null) {
+            oldUseGravity  = transform.gameObject.GetComponent<Rigidbody>().useGravity;
+            oldIsKinematic = transform.gameObject.GetComponent<Rigidbody>().isKinematic;
+        }
+
+        //init stuff
         allPointsInTime = new List<Point>();
-        timeStone = GameObject.Find("Time Stone").GetComponent<TimeStone>();
-        allPointsInTime.Add(new Point(-1, transform, transform.gameObject.GetComponent<Rigidbody>()));
-        allPointsInTime.Add(new Point(0, transform, transform.gameObject.GetComponent<Rigidbody>()));
+        timeController = GameObject.Find("Time Stone").GetComponent<TimeStone>();
+
+        //add in default points to prevent errors with indexing
+        allPointsInTime.Add(new Point(-1, transform, getrb()));
+        allPointsInTime.Add(new Point(0, transform, getrb()));
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        length = allPointsInTime.Count;
+        index = getPointAtTime(timeController.time);
     }
 
     void FixedUpdate() {
 
-        if(timeStone.isControlling != lastStatus) {
-            if(!timeStone.isControlling) {
-                Point determinedSpot = getPointAtTime(timeStone.time);
-                GetComponent<Rigidbody>().velocity = determinedSpot.velocity;
-                GetComponent<Rigidbody>().angularVelocity = determinedSpot.angularVelocity;
 
-                transform.gameObject.GetComponent<Rigidbody>().useGravity  = oldUseGravity;
-                transform.gameObject.GetComponent<Rigidbody>().isKinematic = oldIsKinematic;
+        if(timeController.isControlling != lastStatus) { //if the timeController just changed, we have some work regarding saving some stats
 
-            } else {
-                oldUseGravity = transform.gameObject.GetComponent<Rigidbody>().useGravity;
-                oldIsKinematic  = transform.gameObject.GetComponent<Rigidbody>().isKinematic;
+            if(!timeController.isControlling) { //if the timeController just stopped controlling
+            
+                Point determinedSpot = getPointAtTime(timeController.time); //apply the forces to the object
+                
+                if(getrb() != null) { //tries exist to prevent error spam for objects without a rigidbody
+                    GetComponent<Rigidbody>().velocity = determinedSpot.velocity;
+                    GetComponent<Rigidbody>().angularVelocity = determinedSpot.angularVelocity;
 
-                transform.gameObject.GetComponent<Rigidbody>().useGravity = false;
-                transform.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+                    transform.gameObject.GetComponent<Rigidbody>().useGravity  = oldUseGravity; //reset these values
+                    transform.gameObject.GetComponent<Rigidbody>().isKinematic = oldIsKinematic;
+                }
+
+            } else { //if it just took control
+                if(getrb() != null) {
+                    oldUseGravity = transform.gameObject.GetComponent<Rigidbody>().useGravity; //save these values so they can be changed non destructively
+                    oldIsKinematic  = transform.gameObject.GetComponent<Rigidbody>().isKinematic;
+
+                    transform.gameObject.GetComponent<Rigidbody>().useGravity = false; //set them tpo what they need to be
+                    transform.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+                }
             }
+
         }
-        lastStatus = timeStone.isControlling;
 
+        lastStatus = timeController.isControlling; //how we know it was just changed
 
+        if(timeController.isControlling) { //if the controller is in control
 
-        if(timeStone.isControlling) {
-
-            Point determinedSpot = getPointAtTime(timeStone.time);
+            Point determinedSpot = getPointAtTime(timeController.time); //go to the point the controller says
             transform.position = determinedSpot.position;
             transform.rotation = determinedSpot.rotation;
             
-        } else {
+        } else { //if it isnt in control
 
-            while(allPointsInTime[allPointsInTime.Count-1].time > timeStone.time) {
+            while(allPointsInTime[allPointsInTime.Count-1].time > timeController.time) { //remove all points in the future
                 allPointsInTime.RemoveAt(allPointsInTime.Count-1);
             }
 
-            if(!isPointSame(allPointsInTime[allPointsInTime.Count-1], transform)) {
-                allPointsInTime.Add(new Point(timeStone.time, transform, transform.gameObject.GetComponent<Rigidbody>()));
+            if(!isPointSame(allPointsInTime[allPointsInTime.Count-1], transform)) { //if the object has moved, add the position to the list
+                allPointsInTime.Add(new Point(timeController.time, transform, getrb()));
             }
         }
+
+
+
     }
 
     Point getPointAtTime(int time) {
@@ -82,4 +104,14 @@ public class TimeRecorder : MonoBehaviour
         return  object1.position == object2.position && 
                 object1.rotation == object2.rotation;
     }
+
+    Rigidbody getrb() { //returns null if no rb
+        if(transform.gameObject.GetComponent<Rigidbody>() == null) {
+            return null;
+        } else {
+            return transform.gameObject.GetComponent<Rigidbody>();
+        }
+
+    }
+
 }

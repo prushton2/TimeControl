@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class TimeStone : MonoBehaviour
 {
     public bool isControlling;
     public bool justChanged;
     public int time = 0;
+    public int latestTime = 0;
     public int now;
     // Start is called before the first frame update
     void Start()
@@ -19,13 +21,19 @@ public class TimeStone : MonoBehaviour
     {
         this.gameObject.transform.GetChild(0).GetComponent<Light>().enabled = isControlling;
     }
+
     void FixedUpdate() {
+
         if(!isControlling) {
             time += 1;
+            latestTime = time;
         }
+
         if(time<0) {
             time = 0;
         }
+
+
         justChanged = false;
     }
 
@@ -35,11 +43,12 @@ public class TimeStone : MonoBehaviour
     }
 
     public void IncrementTime(int increment) {
+        
         if(!isControlling) {return;}
+
         time += increment;
-        if(time<0) {
-            time = 0;
-        }
+
+        time = Math.Clamp(time, 0, latestTime);
     }
 
 }
