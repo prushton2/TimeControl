@@ -355,13 +355,14 @@
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEngine.SpatialTracking.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEngine.XR.LegacyInputHelpers.ref.dll"
-"Assets/Controllers/RNGesus.cs"
+"Assets/Enemies/Bosses/Boss1/scripts/AI.cs"
+"Assets/GameControllers/RNG.cs"
 "Assets/miscscripts/addForce.cs"
 "Assets/Player/Scripts/Camera.cs"
 "Assets/Player/Scripts/Player.cs"
-"Assets/Time Stone/Scripts/Point.cs"
-"Assets/Time Stone/Scripts/TimeRecorder.cs"
-"Assets/Time Stone/Scripts/TimeStone.cs"
+"Assets/Time Controller/Scripts/Point.cs"
+"Assets/Time Controller/Scripts/TimeController.cs"
+"Assets/Time Controller/Scripts/TimeRecorder.cs"
 -langversion:9.0
 
 /deterministic

@@ -3,7 +3,8 @@ using System.Collections;
 public class Player : MonoBehaviour
 {
   CharacterController characterController;
-  Transform timeStone;
+  TimeController timeController;
+
   public float speed = 7f;
   public float runMultiplier = 1.25f;
   public float jumpSpeed = 0.16f;
@@ -15,7 +16,7 @@ public class Player : MonoBehaviour
   public float Sensitivity = 1.15f;
 
   void Start() {
-    timeStone = transform.Find("Time Stone");
+    timeController = transform.Find("Time Controller").GetComponent<TimeController>();
     characterController = GetComponent<CharacterController>();
   }
 
@@ -64,17 +65,22 @@ public class Player : MonoBehaviour
     }
 
 
-    if(Input.GetKey("q")) {
-      timeStone.GetComponent<TimeStone>().IncrementTime(-1);
-    }
-    if(Input.GetKey("e")) {
-      timeStone.GetComponent<TimeStone>().IncrementTime(1);
-    }
-    if(Input.GetMouseButtonDown(0)) {
-      timeStone.GetComponent<TimeStone>().setIsControlling(!timeStone.GetComponent<TimeStone>().isControlling);
+    
+    if(Input.GetKeyDown("c")) {
+      timeController.setIsControlling(!timeController.isControlling);
     }
 
 
   }
 
+  void FixedUpdate() {
+    if(Input.GetKey("q")) {
+      timeController.IncrementTime(-2);
+    }
+    if(Input.GetKey("e")) {
+      timeController.IncrementTime(2);
+    }
+  }
+
 }
+
