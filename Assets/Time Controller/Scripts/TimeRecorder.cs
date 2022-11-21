@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Newtonsoft.Json;
 
 public class TimeRecorder : MonoBehaviour
 {
@@ -13,7 +14,7 @@ public class TimeRecorder : MonoBehaviour
     public List<Point> allPointsInTime;
 
     public bool useExternalComponents = false;
-    public List<MonoBehaviour> componentsToSave = new List<MonoBehaviour>();
+    public AI attachedAI;
 
 
     void Start()
@@ -28,9 +29,10 @@ public class TimeRecorder : MonoBehaviour
         allPointsInTime = new List<Point>();
         timeController = GameObject.Find("Time Controller").GetComponent<TimeController>();
 
+        
         //add in default points to prevent errors with indexing
-        allPointsInTime.Add(new Point(-1, transform, getrb()));
-        allPointsInTime.Add(new Point(0, transform, getrb()));
+        allPointsInTime.Add(new Point(-1, transform, getrb(), null));
+        allPointsInTime.Add(new Point(0, transform, getrb(), null));
     }
 
     // Update is called once per frame
@@ -76,11 +78,9 @@ public class TimeRecorder : MonoBehaviour
             transform.position = determinedSpot.position;
             transform.rotation = determinedSpot.rotation;
 
-            // for(int i = 0; i<determinedSpot.componentData.Count; i++) {
-            //     try {
-            //         componentsToSave[i].setData(determinedSpot.componentData[i]);
-            //     } catch {}
-            // }
+            if(useExternalComponents) {
+                attachedAI.setData(determinedSpot.ai);
+            }
 
             
         } else { //if it isnt in control
@@ -89,14 +89,14 @@ public class TimeRecorder : MonoBehaviour
                 allPointsInTime.RemoveAt(allPointsInTime.Count-1);
             }
 
-            if(!isPointSame(allPointsInTime[allPointsInTime.Count-1], transform)) { //if the object has moved, add the position to the list
+            Point point = new Point(timeController.time, transform, getrb(), null);
+            if(useExternalComponents) {
+                point.ai = attachedAI.getData();
+            }
                 
-                // List<string> newTimeData = new List<string>();
-                // for(int i = 0; i<componentsToSave.Count; i++) {
-                //     newTimeData.Add(JsonSerializer.Serialize(componentsToSave[i]));
-                // }
-                
-                allPointsInTime.Add(new Point(timeController.time, transform, getrb()));
+
+            if(!allPointsInTime[allPointsInTime.Count-1].equals(point) ) { //if the object has moved, add the position to the list
+                allPointsInTime.Add(point);
             }
         }
 
@@ -113,11 +113,6 @@ public class TimeRecorder : MonoBehaviour
         return allPointsInTime[allPointsInTime.Count-1];
     }
 
-
-    bool isPointSame(Point object1, Transform object2) {
-        return  object1.position == object2.position && 
-                object1.rotation == object2.rotation;
-    }
 
     Rigidbody getrb() { //returns null if no rb
         if(transform.gameObject.GetComponent<Rigidbody>() == null) {
