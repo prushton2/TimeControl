@@ -2,17 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class TimeRecorder : MonoBehaviour
 {
     public bool oldUseGravity;
-    public bool oldIsKinematic;   
-    public List<Point> allPointsInTime;
+    public bool oldIsKinematic;
+
     public bool lastStatus = false;
     public TimeController timeController; 
 
-    public int length = 0;
-    public Point index;
+    public List<Point> allPointsInTime;
+
+    public bool useExternalComponents = false;
+    public List<MonoBehaviour> componentsToSave = new List<MonoBehaviour>();
+
 
     void Start()
     {
@@ -34,8 +36,7 @@ public class TimeRecorder : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        length = allPointsInTime.Count;
-        index = getPointAtTime(timeController.time);
+
     }
 
     void FixedUpdate() {
@@ -74,6 +75,13 @@ public class TimeRecorder : MonoBehaviour
             Point determinedSpot = getPointAtTime(timeController.time); //go to the point the controller says
             transform.position = determinedSpot.position;
             transform.rotation = determinedSpot.rotation;
+
+            // for(int i = 0; i<determinedSpot.componentData.Count; i++) {
+            //     try {
+            //         componentsToSave[i].setData(determinedSpot.componentData[i]);
+            //     } catch {}
+            // }
+
             
         } else { //if it isnt in control
 
@@ -82,6 +90,12 @@ public class TimeRecorder : MonoBehaviour
             }
 
             if(!isPointSame(allPointsInTime[allPointsInTime.Count-1], transform)) { //if the object has moved, add the position to the list
+                
+                // List<string> newTimeData = new List<string>();
+                // for(int i = 0; i<componentsToSave.Count; i++) {
+                //     newTimeData.Add(JsonSerializer.Serialize(componentsToSave[i]));
+                // }
+                
                 allPointsInTime.Add(new Point(timeController.time, transform, getrb()));
             }
         }

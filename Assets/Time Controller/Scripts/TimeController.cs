@@ -10,6 +10,7 @@ public class TimeController : MonoBehaviour
     public int time = 0;
     public int latestTime = 0;
     public int now;
+
     // Start is called before the first frame update
     void Start()
     {

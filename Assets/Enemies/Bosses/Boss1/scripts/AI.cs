@@ -5,7 +5,7 @@ using UnityEngine;
 public class AI : MonoBehaviour
 {
 
-    public string state;
+    public string state { get; set; }
     public bool isEnabled = false;
 
     private RNG rng;
@@ -13,12 +13,15 @@ public class AI : MonoBehaviour
     private TimeController timeController;
     private CharacterController characterController;
 
+    public string[] validStates = {"idle", "walkNearPlayer"};
 
     public Vector3 direction = Vector3.zero;
     public int lastChangedTime = 0;
 
     void Start()
     {
+        state = "idle";
+    
         rng = GameObject.Find("GameController").GetComponent<RNG>();
         player = GameObject.Find("Player");
         timeController = GameObject.Find("Time Controller").GetComponent<TimeController>();
@@ -26,12 +29,15 @@ public class AI : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update() {
-        state = "walkNearPlayer";
-    }
+    void Update() {}
 
     void FixedUpdate() {
         if(!timeController.isControlling && isEnabled) {
+            
+            if(rng.Next(timeController.time)%15 == 0) {
+                state = validStates[rng.Next(timeController.time)%(validStates.Length-1)];
+            }
+            
             executeState(state);
         }
     }
