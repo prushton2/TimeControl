@@ -364,6 +364,8 @@
 "Assets/Time Controller/Scripts/Point.cs"
 "Assets/Time Controller/Scripts/TimeController.cs"
 "Assets/Time Controller/Scripts/TimeRecorder.cs"
+"Assets/Weapons/Axe/Axe.cs"
+"Assets/Weapons/Weapon.cs"
 -langversion:9.0
 
 /deterministic

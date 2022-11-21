@@ -10,16 +10,17 @@ public class AI : MonoBehaviour
 
     public string state = "idle";
     public bool isEnabled = false;
+    public int stateProgress = 0;
 
-    private RNG rng;
-    private GameObject player;
-    private TimeController timeController;
-    private CharacterController characterController;
+    protected RNG rng;
+    protected GameObject player;
+    protected TimeController timeController;
+    protected CharacterController characterController;
 
-    private string[] validStates = {"idle", "walkNearPlayer"};
+    protected string[] interruptableStates = {"idle", "walkNearPlayer"};
 
-    private Vector3 direction = Vector3.zero;
-    private int lastChangedTime = 0;
+    protected Vector3 direction = Vector3.zero;
+    protected int lastChangedTime = 0;
 
     protected void Start()
     {
@@ -32,13 +33,15 @@ public class AI : MonoBehaviour
     // Update is called once per frame
     protected void Update() {}
 
-    protected void FixedUpdate() {
+    protected int FixedUpdate() {
         if(!timeController.isControlling && isEnabled) {
-            executeState(state);
+            return executeState(state);
+        } else {
+            return 0;
         }
     }
 
-    protected void executeState(string state) {
+    protected int executeState(string state) {
         switch(state) {
             case "idle":
                 break;
@@ -46,8 +49,9 @@ public class AI : MonoBehaviour
                 executeWalkNearPlayer();
                 break;
             default:
-                break;
+                return 1;
         }
+        return 0;
     }
 
 
@@ -79,16 +83,29 @@ public class AI : MonoBehaviour
     public JObject getData() {
         return JObject.FromObject(new {
             state = this.state,
-            isEnabled = this.isEnabled
+            isEnabled = this.isEnabled,
+            stateProgress = this.stateProgress
         });
     }
 
     public void setData(JObject ai) {
         this.state = (string)ai["state"];
         this.isEnabled = (bool)ai["isEnabled"];
+        this.stateProgress = (int)ai["stateProgress"];
     }
 
     public string stringify() {
         return "AI data: state: " + this.state + " isEnabled: " + this.isEnabled; 
+    }
+
+    public void updateState(string newState, bool resetProgress = true) {
+        this.state = newState;
+        if(resetProgress) {
+            this.stateProgress = -1;
+        }
+    }
+
+    public bool checkCooldown(int cooldown, int lastUsed) {
+        return timeController.time - lastUsed > cooldown;
     }
 }
