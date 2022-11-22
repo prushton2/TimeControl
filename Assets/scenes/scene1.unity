@@ -953,7 +953,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   state: idle
-  isEnabled: 1
+  isEnabled: 0
   stateProgress: -1
   enemyName: Akirro, The Virgin
   Axe: {fileID: 680856390}

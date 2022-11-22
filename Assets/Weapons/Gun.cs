@@ -66,8 +66,11 @@ public class Gun : MonoBehaviour
 
         bullet.SetActive(true);
 
-        Physics.Raycast(bullet.transform.position, transform.forward, out bulletDestination, this.range, ~(1<<8));
-        bullet.transform.localScale = new Vector3(0, 0, bulletDestination.distance);
+        if(Physics.Raycast(bullet.transform.position, transform.forward, out bulletDestination, this.range, ~(1<<8))) {
+            bullet.transform.localScale = new Vector3(0, 0, bulletDestination.distance);
+        } else {
+            bullet.transform.localScale = new Vector3(0, 0, range);
+        }
 
         if(Physics.Raycast(bulletOrigin.transform.position, transform.forward, out hit, this.range, ~(1<<8))) {
          
