@@ -60,10 +60,7 @@ public class AI : MonoBehaviour
 
     protected void executeWalkNearPlayer() {
 
-        this.transform.LookAt(player.transform);
-        this.transform.eulerAngles = new Vector3(0, this.transform.eulerAngles.y, this.transform.eulerAngles.z);
-
-        this.transform.Find("Head").LookAt(player.transform);
+        LookAt(player.transform);
         
         if(rng.Next(timeController.time)%10 == 0 || direction == Vector3.zero || timeController.time - lastChangedTime > 300) {
             
@@ -81,6 +78,12 @@ public class AI : MonoBehaviour
         } else {
             characterController.Move(direction*.05f);
         }
+    }
+
+    protected void LookAt(Transform direction) {
+        this.transform.LookAt(direction);
+        this.transform.eulerAngles = new Vector3(0, this.transform.eulerAngles.y, this.transform.eulerAngles.z);
+        this.transform.Find("Head").LookAt(direction);
     }
 
     public JObject getData() {

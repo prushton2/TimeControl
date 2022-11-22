@@ -88,6 +88,7 @@ public class Boss1AI : AI
     private void executeAxeAttackCharge() {
         base.stateProgress += 1;
 
+        base.LookAt(player.transform);
         Axe.charge(base.stateProgress);
 
         if(base.stateProgress == 5) {
@@ -98,6 +99,7 @@ public class Boss1AI : AI
     private void executeAxeAttackCast() {
         base.stateProgress += 1;
 
+        base.LookAt(player.transform);
         Axe.cast(base.stateProgress);
 
         if(base.stateProgress == 25) {
