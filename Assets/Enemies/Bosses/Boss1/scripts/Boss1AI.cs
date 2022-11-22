@@ -5,6 +5,7 @@ using System;
 
 public class Boss1AI : AI
 {
+    
 
     //Weapons
     public Weapon Axe;
@@ -14,13 +15,15 @@ public class Boss1AI : AI
 
 
     new void Start() {
-
+        base.enemyName = "Akirro, the Virgin";
         base.state = "idle";
         base.Start();
     }
 
     // Update is called once per frame
     new void Update() {
+
+        
 
         if(base.state == "idle") {
             base.state = "walkNearPlayer";
@@ -42,11 +45,28 @@ public class Boss1AI : AI
             }
 
         }
+
+
     }
 
 
 
     new void FixedUpdate() {
+
+        if(base.state == "dead") {
+            return;
+        }
+
+        if(base.healthPool.isDead) {
+            Rigidbody rb = this.gameObject.transform.Find("Chest").gameObject.AddComponent(typeof(Rigidbody)) as Rigidbody;
+            rb = this.gameObject.transform.Find("Head").gameObject.AddComponent(typeof(Rigidbody)) as Rigidbody;
+            rb = this.gameObject.transform.Find("Left Arm").gameObject.AddComponent(typeof(Rigidbody)) as Rigidbody;
+            rb = this.gameObject.transform.Find("Left Leg").gameObject.AddComponent(typeof(Rigidbody)) as Rigidbody;
+            rb = this.gameObject.transform.Find("Right Arm").gameObject.AddComponent(typeof(Rigidbody)) as Rigidbody;
+            rb = this.gameObject.transform.Find("Right Leg").gameObject.AddComponent(typeof(Rigidbody)) as Rigidbody;
+            base.updateState("dead");
+        }
+
 
         if(base.FixedUpdate() == 1) { //if the AI state handler cant handle a state, give it to this program
             switch(base.state) {
@@ -87,5 +107,6 @@ public class Boss1AI : AI
         }
     }
 
+    
 
 }

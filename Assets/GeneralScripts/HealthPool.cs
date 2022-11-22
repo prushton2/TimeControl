@@ -12,6 +12,8 @@ public class HealthPool : MonoBehaviour
 
     public bool isDead = false;
 
+    public AI attachedTo;
+
     public void updateIsDead() {
         isDead = health <= minHealth;
     }
@@ -24,6 +26,10 @@ public class HealthPool : MonoBehaviour
     public void heal(int healing) {
         health = Math.Clamp(health + healing, minHealth, maxHealth);
         updateIsDead();
+    }
+
+    public float getPercentage() {
+        return (float)health / (float)maxHealth;
     }
 
     public JObject getData() {

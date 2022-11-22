@@ -6,12 +6,20 @@ public class BajaBlaster : Gun
 {
     // Start is called before the first frame update
     
-    
-    void Start()
+    new void Start()
     {
-        base.damage = 122166;
-        base.magazine = 7;
-        base.timeToRecharge = 50;
+        damage = 1500;
+        magazine = 7;
+        timeToRecharge = 50;
+        minTimeToRecharge = 5;
+        range = 100;
+        bulletLifespan = 2;
+        discountIterator = 5;
+        base.Start();
+    }
+
+    new void FixedUpdate() {
+        base.FixedUpdate();
     }
 
     // Update is called once per frame

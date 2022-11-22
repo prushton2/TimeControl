@@ -11,11 +11,13 @@ public class AI : MonoBehaviour
     public string state = "idle";
     public bool isEnabled = false;
     public int stateProgress = 0;
+    public string enemyName;
 
     protected RNG rng;
     protected GameObject player;
     protected TimeController timeController;
     protected CharacterController characterController;
+    protected HealthPool healthPool;
 
     protected string[] interruptableStates = {"idle", "walkNearPlayer"};
 
@@ -28,6 +30,7 @@ public class AI : MonoBehaviour
         player = GameObject.Find("Player");
         timeController = GameObject.Find("Time Controller").GetComponent<TimeController>();
         characterController = GetComponent<CharacterController>();
+        healthPool = GetComponent<HealthPool>();
     }
 
     // Update is called once per frame
