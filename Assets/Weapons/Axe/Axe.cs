@@ -14,7 +14,7 @@ public class Axe : Weapon
     }
 
     override public void cast(int progress) {
-        if(progress < 10) {
+        if(progress < 19) {
             return;
         }
 
@@ -23,7 +23,7 @@ public class Axe : Weapon
             base.weapon.transform.localPosition = base.weaponEndPosition;
             base.weapon.transform.localRotation = Quaternion.Euler(base.weaponEndRotation);
             
-            base.dealDamage(100);
+            dealDamage(100);
 
             return;
         }
@@ -34,4 +34,14 @@ public class Axe : Weapon
         }
 
     }
+
+    override public void dealDamage(int damage) {
+        Collider[] entities = Physics.OverlapBox(base.damageArea.transform.position, new Vector3(17.5f, 0.05f, 5), base.damageArea.transform.rotation);
+                
+        foreach(Collider col in entities) {
+            col.GetComponent<HealthPool>().dealDamage(100);
+        }
+    
+    }
+
 }

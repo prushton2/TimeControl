@@ -10,14 +10,17 @@ public class Point {
     public Vector3 velocity;
     public Vector3 angularVelocity;
     public JObject ai;
+    public JObject healthPool;
 
-    public Point(int time, Transform transform, Rigidbody rb, JObject ai = null) {
+    public Point(int time, Transform transform, Rigidbody rb, JObject ai = null, JObject healthPool = null) {
         this.time = time;
         
         this.position = transform.position;
         this.rotation = transform.rotation;
         
         this.ai = ai;
+
+        this.healthPool = healthPool;
 
         if(rb != null) {
             this.velocity = rb.velocity;
@@ -35,6 +38,10 @@ public class Point {
         }
 
         if(this.ai != other.ai) {
+            return false;
+        }
+
+        if(this.healthPool != other.healthPool) {
             return false;
         }
 

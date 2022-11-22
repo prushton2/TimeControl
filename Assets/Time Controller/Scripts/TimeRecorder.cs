@@ -5,34 +5,39 @@ using Newtonsoft.Json;
 
 public class TimeRecorder : MonoBehaviour
 {
-    public bool oldUseGravity;
-    public bool oldIsKinematic;
-
-    public bool lastStatus = false;
     public TimeController timeController; 
 
-    public List<Point> allPointsInTime;
+    public bool savePosition = true;
+    public Transform attachedTransform;
 
-    public bool useExternalComponents = false;
+    public bool saveAI = false;
     public AI attachedAI;
 
+    public bool saveHealth = false;  
+    public HealthPool attachedHealthPool;
+
+
+    private bool oldUseGravity;
+    private bool oldIsKinematic;
+    private bool lastStatus = false;
+    public List<Point> allPointsInTime;
 
     void Start()
     {
-        //remember variables that will change
-        if(getrb() != null) {
-            oldUseGravity  = transform.gameObject.GetComponent<Rigidbody>().useGravity;
-            oldIsKinematic = transform.gameObject.GetComponent<Rigidbody>().isKinematic;
-        }
-
         //init stuff
         allPointsInTime = new List<Point>();
         timeController = GameObject.Find("Time Controller").GetComponent<TimeController>();
+        attachedTransform = this.gameObject.GetComponent<Transform>();
 
+        //remember variables that will change
+        if(getrb() != null) {
+            oldUseGravity  = attachedTransform.gameObject.GetComponent<Rigidbody>().useGravity;
+            oldIsKinematic = attachedTransform.gameObject.GetComponent<Rigidbody>().isKinematic;
+        }
         
         //add in default points to prevent errors with indexing
-        allPointsInTime.Add(new Point(-1, transform, getrb(), null));
-        allPointsInTime.Add(new Point(0, transform, getrb(), null));
+        allPointsInTime.Add(new Point(-1, attachedTransform, getrb(), null));
+        allPointsInTime.Add(new Point(0, attachedTransform, getrb(), null));
     }
 
     // Update is called once per frame
@@ -44,7 +49,7 @@ public class TimeRecorder : MonoBehaviour
     void FixedUpdate() {
 
 
-        if(timeController.isControlling != lastStatus) { //if the timeController just changed, we have some work regarding saving some stats
+        if(timeController.isControlling != lastStatus && savePosition) { //if the timeController just changed, we have some work regarding saving some stats
 
             if(!timeController.isControlling) { //if the timeController just stopped controlling
             
@@ -54,17 +59,17 @@ public class TimeRecorder : MonoBehaviour
                     GetComponent<Rigidbody>().velocity = determinedSpot.velocity;
                     GetComponent<Rigidbody>().angularVelocity = determinedSpot.angularVelocity;
 
-                    transform.gameObject.GetComponent<Rigidbody>().useGravity  = oldUseGravity; //reset these values
-                    transform.gameObject.GetComponent<Rigidbody>().isKinematic = oldIsKinematic;
+                    attachedTransform.gameObject.GetComponent<Rigidbody>().useGravity  = oldUseGravity; //reset these values
+                    attachedTransform.gameObject.GetComponent<Rigidbody>().isKinematic = oldIsKinematic;
                 }
 
             } else { //if it just took control
                 if(getrb() != null) {
-                    oldUseGravity = transform.gameObject.GetComponent<Rigidbody>().useGravity; //save these values so they can be changed non destructively
-                    oldIsKinematic  = transform.gameObject.GetComponent<Rigidbody>().isKinematic;
+                    oldUseGravity = attachedTransform.gameObject.GetComponent<Rigidbody>().useGravity; //save these values so they can be changed non destructively
+                    oldIsKinematic  = attachedTransform.gameObject.GetComponent<Rigidbody>().isKinematic;
 
-                    transform.gameObject.GetComponent<Rigidbody>().useGravity = false; //set them tpo what they need to be
-                    transform.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+                    attachedTransform.gameObject.GetComponent<Rigidbody>().useGravity = false; //set them tpo what they need to be
+                    attachedTransform.gameObject.GetComponent<Rigidbody>().isKinematic = true;
                 }
             }
 
@@ -75,11 +80,17 @@ public class TimeRecorder : MonoBehaviour
         if(timeController.isControlling) { //if the controller is in control
 
             Point determinedSpot = getPointAtTime(timeController.time); //go to the point the controller says
-            transform.position = determinedSpot.position;
-            transform.rotation = determinedSpot.rotation;
+            if(savePosition) {
+                attachedTransform.position = determinedSpot.position;
+                attachedTransform.rotation = determinedSpot.rotation;
+            }
 
-            if(useExternalComponents) {
+            if(saveAI) {
                 attachedAI.setData(determinedSpot.ai);
+            }
+
+            if(saveHealth) {
+                attachedHealthPool.setData(determinedSpot.healthPool);   
             }
 
             
@@ -89,9 +100,22 @@ public class TimeRecorder : MonoBehaviour
                 allPointsInTime.RemoveAt(allPointsInTime.Count-1);
             }
 
-            Point point = new Point(timeController.time, transform, getrb(), null);
-            if(useExternalComponents) {
+            Point point = new Point(timeController.time, attachedTransform, getrb(), null);
+            
+            if(!savePosition) {
+                point.position = new Vector3(0, 0, 0);
+                point.rotation = new Quaternion();
+
+                point.velocity = new Vector3(0, 0, 0);
+                point.angularVelocity = new Vector3(0, 0, 0);
+            }
+
+            if(saveAI) {
                 point.ai = attachedAI.getData();
+            }
+
+            if(saveHealth) {
+                point.healthPool = attachedHealthPool.getData();
             }
                 
 
@@ -115,10 +139,10 @@ public class TimeRecorder : MonoBehaviour
 
 
     Rigidbody getrb() { //returns null if no rb
-        if(transform.gameObject.GetComponent<Rigidbody>() == null) {
+        if(attachedTransform.gameObject.GetComponent<Rigidbody>() == null) {
             return null;
         } else {
-            return transform.gameObject.GetComponent<Rigidbody>();
+            return attachedTransform.gameObject.GetComponent<Rigidbody>();
         }
 
     }

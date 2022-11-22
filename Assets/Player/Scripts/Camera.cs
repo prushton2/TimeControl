@@ -4,6 +4,8 @@ using UnityEngine;
 using System;
 public class Camera : MonoBehaviour {
 
+    public Gun attachedGun;
+
     public Transform player;
     float ChgInY = 0;
     public double viewHeight = 1.5;
@@ -22,6 +24,11 @@ public class Camera : MonoBehaviour {
 
     var euler = player.transform.rotation.eulerAngles;
     transform.rotation = Quaternion.Euler(-ChgInY, euler.y, 0);        
+
+    if(Input.GetKeyDown(KeyCode.Mouse0)) {
+        attachedGun.fire();
+    }
+
   }
 }
 

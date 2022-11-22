@@ -358,6 +358,7 @@
 "Assets/Enemies/Bosses/AI.cs"
 "Assets/Enemies/Bosses/Boss1/scripts/Boss1AI.cs"
 "Assets/GameControllers/RNG.cs"
+"Assets/GeneralScripts/HealthPool.cs"
 "Assets/miscscripts/addForce.cs"
 "Assets/Player/Scripts/Camera.cs"
 "Assets/Player/Scripts/Player.cs"
@@ -365,6 +366,8 @@
 "Assets/Time Controller/Scripts/TimeController.cs"
 "Assets/Time Controller/Scripts/TimeRecorder.cs"
 "Assets/Weapons/Axe/Axe.cs"
+"Assets/Weapons/Gun.cs"
+"Assets/Weapons/Guns/Baja Blaster/BajaBlaster.cs"
 "Assets/Weapons/Weapon.cs"
 -langversion:9.0
 

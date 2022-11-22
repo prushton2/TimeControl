@@ -33,7 +33,7 @@ public class Weapon : MonoBehaviour
         }
     }
 
-    protected void dealDamage(int damage) {
+    public virtual void dealDamage(int damage) {
         Debug.Log("Dealt Damage");
     }
 

@@ -26,12 +26,18 @@ public class Boss1AI : AI
             base.state = "walkNearPlayer";
         }
 
-        if(Array.Find(base.interruptableStates, element => element == state) != null) {
+        if(Array.Find(base.interruptableStates, element => element == state) != null) { //if we arent in an uninterruptable state (so walking basically)
 
             //Look for opportunity to attack
 
-            if(Vector3.Distance(transform.position, base.player.transform.position) < 30 && base.checkCooldown(AxeCooldown, lastUsedAxe)) {
-                base.updateState("AxeAttack_Charge");
+
+            if(base.timeController.time%250 == 0) {//is it time to attack?
+
+                if(Vector3.Distance(transform.position, base.player.transform.position) < 30) { //if player is close enough, do an axe slam
+                    base.updateState("AxeAttack_Charge");
+                } else {
+                    //do another attack instead pogu (meteorite, gun, bomb)
+                }
 
             }
 
@@ -41,10 +47,6 @@ public class Boss1AI : AI
 
 
     new void FixedUpdate() {
-        //some code to update the state (no clue how to do this part)
-
-
-
 
         if(base.FixedUpdate() == 1) { //if the AI state handler cant handle a state, give it to this program
             switch(base.state) {
