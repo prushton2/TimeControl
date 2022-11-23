@@ -20,7 +20,7 @@ public class Axe : Weapon
             base.weapon.transform.localPosition = base.weaponEndPosition;
             base.weapon.transform.localRotation = Quaternion.Euler(base.weaponEndRotation);
             
-            dealDamage(100);
+            this.dealDamage(100);
 
             return;
         }
@@ -32,17 +32,10 @@ public class Axe : Weapon
 
     }
 
-    override public void dealDamage(int damage) {
+    public void dealDamage(int damage) {
         Collider[] entities = Physics.OverlapBox(base.damageArea.transform.position, new Vector3(17.5f, 0.05f, 5), base.damageArea.transform.rotation, (1<<3));
 
-        foreach(Collider col in entities) {
-            col.gameObject.GetComponent<HealthPool>().dealDamage(100);
-            col.gameObject.GetComponent<HealthPool>().isInvincible = true;
-        }
-
-        foreach(Collider col in entities) {
-            col.gameObject.GetComponent<HealthPool>().isInvincible = false;
-        }
+        base.dealDamage(entities, damage);
     
     }
 

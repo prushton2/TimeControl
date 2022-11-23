@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+
+//this is a superclass for weapons the player uses
 public class Gun : MonoBehaviour
 {
 

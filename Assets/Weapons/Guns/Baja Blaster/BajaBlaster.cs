@@ -12,7 +12,7 @@ public class BajaBlaster : Gun
         magazine = 7;
         timeToRecharge = 50;
         minTimeToRecharge = 5;
-        range = 25;
+        range = 100;
         bulletLifespan = 2;
         discountIterator = 5;
         base.Start();

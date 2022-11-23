@@ -9,9 +9,7 @@ public class Boss1AI : AI
 
     //Weapons
     public Weapon Axe;
-
-    public int AxeCooldown = 250;
-    public int lastUsedAxe;
+    public Meteor Meteor;
 
 
     new void Start() {
@@ -34,12 +32,12 @@ public class Boss1AI : AI
             //Look for opportunity to attack
 
 
-            if(base.timeController.time%250 == 0) {//is it time to attack?
+            if(base.timeController.time%500 == 0) {//is it time to attack?
 
                 if(Vector3.Distance(transform.position, base.player.transform.position) < 30) { //if player is close enough, do an axe slam
                     base.updateState("AxeAttack_Charge");
                 } else {
-                    //do another attack instead pogu (meteorite, gun, bomb)
+                    base.updateState("MeteorAttack_Charge");
                 }
 
             }
@@ -76,6 +74,12 @@ public class Boss1AI : AI
                 case "AxeAttack_Cast":
                     executeAxeAttackCast();
                     break;
+                case "MeteorAttack_Charge":
+                    executeMeteorAttackCharge();
+                    break;
+                case "MeteorAttack_Cast":
+                    executeMeteorAttackCast();
+                    break;
                 default:
                     break;
             }
@@ -103,12 +107,38 @@ public class Boss1AI : AI
         Axe.cast(base.stateProgress);
 
         if(base.stateProgress == 25) {
-            lastUsedAxe = base.timeController.time;
             Axe.reset();
             base.updateState("idle");
         }
     }
 
     
+
+    private void executeMeteorAttackCharge() {
+        base.stateProgress += 1;
+
+        base.LookAt(player.transform);
+
+        Meteor.targetTransform(base.player.transform, new Vector3(0, -1f, 0));
+        
+        Meteor.charge(base.stateProgress);
+
+        if(base.stateProgress == 100) {
+            base.updateState("MeteorAttack_Cast");
+        }
+    }
+
+    private void executeMeteorAttackCast() {
+        base.stateProgress += 1;
+
+        Meteor.cast(base.stateProgress);
+
+        if(base.stateProgress >= 103) {
+            Meteor.reset();
+            base.updateState("idle");
+        }
+    }
+
+
 
 }
