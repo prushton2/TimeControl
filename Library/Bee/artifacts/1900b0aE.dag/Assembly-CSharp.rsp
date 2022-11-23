@@ -360,6 +360,7 @@
 "Assets/GameControllers/RNG.cs"
 "Assets/GeneralScripts/HealthPool.cs"
 "Assets/miscscripts/addForce.cs"
+"Assets/miscscripts/Clock.cs"
 "Assets/Player/Scripts/Camera.cs"
 "Assets/Player/Scripts/Player.cs"
 "Assets/Time Controller/Scripts/Point.cs"

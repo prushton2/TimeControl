@@ -19,9 +19,11 @@ public class AI : MonoBehaviour
     protected CharacterController characterController;
     protected HealthPool healthPool;
 
-    protected string[] interruptableStates = {"idle", "walkNearPlayer"};
 
+    protected string[] interruptableStates = {"idle", "walkNearPlayer"};
+    protected Vector3 moveDirection = new Vector3(0, 0, 0);
     protected Vector3 direction = Vector3.zero;
+    protected float gravity = 0.02f;
     protected int lastChangedTime = 0;
 
     protected void Start()
@@ -34,7 +36,16 @@ public class AI : MonoBehaviour
     }
 
     // Update is called once per frame
-    protected void Update() {}
+    protected void Update() {
+        if (!characterController.isGrounded) { //This code modifies the accumulator moveDirection.y, allowing jumping and falling properly
+            moveDirection.y -= gravity*Time.deltaTime;
+        }
+        else {// (characterController.isGrounded) {
+            moveDirection.y = 0;
+        }
+
+        characterController.Move(moveDirection);
+    }
 
     protected int FixedUpdate() {
         if(!timeController.isControlling && isEnabled) {

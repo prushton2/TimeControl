@@ -22,7 +22,7 @@ public class Boss1AI : AI
 
     // Update is called once per frame
     new void Update() {
-
+        base.Update();
         
 
         if(base.state == "idle") {
@@ -91,7 +91,7 @@ public class Boss1AI : AI
         base.LookAt(player.transform);
         Axe.charge(base.stateProgress);
 
-        if(base.stateProgress == 5) {
+        if(base.stateProgress == 25) {
             base.updateState("AxeAttack_Cast");
         }
     }
@@ -99,7 +99,7 @@ public class Boss1AI : AI
     private void executeAxeAttackCast() {
         base.stateProgress += 1;
 
-        base.LookAt(player.transform);
+        // base.LookAt(player.transform);
         Axe.cast(base.stateProgress);
 
         if(base.stateProgress == 25) {

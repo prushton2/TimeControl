@@ -9,7 +9,7 @@ public class HealthPool : MonoBehaviour
     public int maxHealth = 200;
     public int minHealth = 0;
     public int health = 200;
-
+    public bool isInvincible = false;
     public bool isDead = false;
 
     public AI attachedTo;
@@ -19,6 +19,10 @@ public class HealthPool : MonoBehaviour
     }
 
     public void dealDamage(int damage) {
+        if(isInvincible) {
+            return;
+        }
+        
         health = Math.Clamp(health - damage, minHealth, maxHealth);
         updateIsDead();
     }

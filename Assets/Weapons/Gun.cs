@@ -15,9 +15,10 @@ public class Gun : MonoBehaviour
     public int magazine = 0;
     public int timeToRecharge = 0;
     public int minTimeToRecharge = 0;
+    public int range = 0;
+    public int bulletLifespan = 0;
+    
     public int cooldown;
-    public int range;
-    public int bulletLifespan;
     public int discountIterator;
 
     //NOT THESE
@@ -52,6 +53,7 @@ public class Gun : MonoBehaviour
 
 
     }
+
 
     public virtual GameObject fire() {
         if(!canShoot()) {
