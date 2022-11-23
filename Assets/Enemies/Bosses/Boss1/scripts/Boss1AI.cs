@@ -32,7 +32,7 @@ public class Boss1AI : AI
             //Look for opportunity to attack
 
 
-            if(base.timeController.time%500 == 0) {//is it time to attack?
+            if(base.timeController.time%500 == 499) {//is it time to attack?
 
                 if(Vector3.Distance(transform.position, base.player.transform.position) < 30) { //if player is close enough, do an axe slam
                     base.updateState("AxeAttack_Charge");

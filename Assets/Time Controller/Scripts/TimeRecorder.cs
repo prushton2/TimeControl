@@ -8,12 +8,15 @@ public class TimeRecorder : MonoBehaviour
     public TimeController timeController; 
 
     public bool savePosition = true;
+    public bool loadPosition = true;
     public Transform attachedTransform;
 
     public bool saveAI = false;
+    public bool loadAI = true;
     public AI attachedAI;
 
     public bool saveHealth = false;  
+    public bool loadHealth = true;  
     public HealthPool attachedHealthPool;
 
 
@@ -80,16 +83,16 @@ public class TimeRecorder : MonoBehaviour
         if(timeController.isControlling) { //if the controller is in control
 
             Point determinedSpot = getPointAtTime(timeController.time); //go to the point the controller says
-            if(savePosition) {
+            if(loadPosition && savePosition) {
                 attachedTransform.position = determinedSpot.position;
                 attachedTransform.rotation = determinedSpot.rotation;
             }
 
-            if(saveAI) {
+            if(loadAI && saveAI) {
                 attachedAI.setData(determinedSpot.ai);
             }
 
-            if(saveHealth) {
+            if(loadHealth && saveHealth) {
                 attachedHealthPool.setData(determinedSpot.healthPool);   
             }
 

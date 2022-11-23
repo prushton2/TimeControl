@@ -2,9 +2,11 @@
 using System.Collections;
 public class Player : MonoBehaviour
 {
-    CharacterController characterController;
-    TimeController timeController;
-    public Boss1AI ai;
+    public CharacterController characterController;
+    public TimeController timeController;
+    public TimeRecorder timeRecorder;
+    public TimeRecorder cameraTimeRecorder;
+    public HealthPool healthPool;
 
     public float speed = 7f;
     public float runMultiplier = 1.25f;
@@ -16,15 +18,20 @@ public class Player : MonoBehaviour
     public bool moving = false;
     public float Sensitivity = 1.15f;
 
-
+    public bool rewindingDeath = false;
 
     void Start() {
         timeController = transform.Find("Time Controller").GetComponent<TimeController>();
         characterController = GetComponent<CharacterController>();
+        cameraTimeRecorder = this.transform.Find("Main Camera").GetComponent<TimeRecorder>();
     }
 
     void Update()
     {
+
+        if(rewindingDeath) {
+            return;
+        }
 
         deltaX += Input.GetAxisRaw("Mouse X");
         transform.rotation = Quaternion.Euler(0, Sensitivity*deltaX, 0);
@@ -78,16 +85,30 @@ public class Player : MonoBehaviour
 
     void FixedUpdate() {
 
-        if(Input.GetKey("g")) {
-            ai.updateState("AxeAttack_Charge");
-        }
-
         if(Input.GetKey("q")) {
             timeController.IncrementTime(-2);
         }
         if(Input.GetKey("e")) {
             timeController.IncrementTime(2);
         }
+
+        if(this.healthPool.isDead || rewindingDeath) {
+            rewindingDeath = true;
+            
+            this.timeRecorder.loadPosition = true;
+            this.cameraTimeRecorder.loadPosition = true;
+
+            this.timeController.setIsControlling(true);
+            this.timeController.time -= 10;
+            
+            if(this.timeController.time <= 0) {
+                this.timeRecorder.loadPosition = false;
+                this.cameraTimeRecorder.loadPosition = false;
+                rewindingDeath = false;
+                this.timeController.setIsControlling(false);
+            }
+        }
+
     }
 
 }
