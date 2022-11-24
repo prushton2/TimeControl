@@ -29,6 +29,15 @@ public class Camera : MonoBehaviour {
 
     void Update() {
         
+        if(trackedEnemy != null) {
+            bossBar.SetActive(true);
+            bossBar.transform.Find("HealthBar").gameObject.GetComponent<Slider>().value = trackedEnemy.GetComponent<HealthPool>().getPercentage();
+            bossBar.transform.Find("Name").gameObject.GetComponent<TMPro.TextMeshProUGUI>().text = trackedEnemy.GetComponent<HealthPool>().attachedTo.enemyName;
+        }
+
+        healthBar.transform.Find("HealthBar").gameObject.GetComponent<Slider>().value = this.transform.parent.GetComponent<HealthPool>().getPercentage();
+        healthBar.transform.Find("HealthCount").gameObject.GetComponent<TMPro.TextMeshProUGUI>().text = this.transform.parent.GetComponent<HealthPool>().health + "/" + this.transform.parent.GetComponent<HealthPool>().maxHealth;
+        
         if(playerScript.rewindingDeath) {
             return;
         }
@@ -50,14 +59,6 @@ public class Camera : MonoBehaviour {
             }
         }
 
-        if(trackedEnemy != null) {
-            bossBar.SetActive(true);
-            bossBar.transform.Find("HealthBar").gameObject.GetComponent<Slider>().value = trackedEnemy.GetComponent<HealthPool>().getPercentage();
-            bossBar.transform.Find("Name").gameObject.GetComponent<TMPro.TextMeshProUGUI>().text = trackedEnemy.GetComponent<HealthPool>().attachedTo.enemyName;
-        }
-
-        healthBar.transform.Find("HealthBar").gameObject.GetComponent<Slider>().value = this.transform.parent.GetComponent<HealthPool>().getPercentage();
-        healthBar.transform.Find("HealthCount").gameObject.GetComponent<TMPro.TextMeshProUGUI>().text = this.transform.parent.GetComponent<HealthPool>().health + "/" + this.transform.parent.GetComponent<HealthPool>().maxHealth;
     }
 }
 
