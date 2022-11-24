@@ -7,10 +7,10 @@ using UnityEngine.UI;
 public class Camera : MonoBehaviour {
 
     public Gun attachedGun;
-    public GameObject trackedEnemy = null;
     public Player playerScript;
     public Canvas canvas;
 
+    public GameObject trackedEnemy = null;
     public GameObject bossBar;
     public GameObject healthBar;
 
@@ -18,8 +18,6 @@ public class Camera : MonoBehaviour {
     float ChgInY = 0;
     public double viewHeight = 1.5;
     private GameObject mgr;
-
-
 
     void Start () {
         bossBar = canvas.transform.Find("BossBar").gameObject;
@@ -29,6 +27,27 @@ public class Camera : MonoBehaviour {
 
     void Update() {
         
+        updateHealthBars();
+
+        if(playerScript.rewindingDeath) {
+            return;
+        }
+
+        ChgInY += Input.GetAxisRaw("Mouse Y");
+        ChgInY = Math.Clamp(ChgInY, -90, 90);
+        
+        transform.rotation = Quaternion.Euler(-ChgInY, player.transform.rotation.eulerAngles.y, 0);        
+
+        if(Input.GetKey(KeyCode.Mouse0)) {
+            GameObject enemy = attachedGun.fire();
+            if(enemy != null) {
+                trackedEnemy = enemy;
+            }
+        }
+
+    }
+
+    void updateHealthBars() {
         if(trackedEnemy != null) {
             bossBar.SetActive(true);
             bossBar.transform.Find("HealthBar").gameObject.GetComponent<Slider>().value = trackedEnemy.GetComponent<HealthPool>().getPercentage();
@@ -38,27 +57,6 @@ public class Camera : MonoBehaviour {
         healthBar.transform.Find("HealthBar").gameObject.GetComponent<Slider>().value = this.transform.parent.GetComponent<HealthPool>().getPercentage();
         healthBar.transform.Find("HealthCount").gameObject.GetComponent<TMPro.TextMeshProUGUI>().text = this.transform.parent.GetComponent<HealthPool>().health + "/" + this.transform.parent.GetComponent<HealthPool>().maxHealth;
         
-        if(playerScript.rewindingDeath) {
-            return;
-        }
-
-        ChgInY += Input.GetAxisRaw("Mouse Y");
-        if (ChgInY > 90f) {
-            ChgInY = 90f;
-        } else if(ChgInY < -90f) {
-            ChgInY = -90f;
-        }
-
-        var euler = player.transform.rotation.eulerAngles;
-        transform.rotation = Quaternion.Euler(-ChgInY, euler.y, 0);        
-
-        if(Input.GetKey(KeyCode.Mouse0)) {
-            GameObject enemy = attachedGun.fire();
-            if(enemy != null) {
-                trackedEnemy = enemy;
-            }
-        }
-
     }
 }
 
