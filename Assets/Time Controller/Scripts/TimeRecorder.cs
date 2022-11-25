@@ -19,11 +19,12 @@ public class TimeRecorder : MonoBehaviour
     public bool loadHealth = true;  
     public HealthPool attachedHealthPool;
 
+    private RigidBody attachedRB;
 
     private bool oldUseGravity;
     private bool oldIsKinematic;
     private bool lastStatus = false;
-    public List<Point> allPointsInTime;
+    private List<Point> allPointsInTime;
 
     void Start()
     {
@@ -31,6 +32,7 @@ public class TimeRecorder : MonoBehaviour
         allPointsInTime = new List<Point>();
         timeController = GameObject.Find("Time Controller").GetComponent<TimeController>();
         attachedTransform = this.gameObject.GetComponent<Transform>();
+        attachedRB = attachedTransform.gameObject.GetComponent<Rigidbody>()
 
         //remember variables that will change
         if(getrb() != null) {
@@ -142,12 +144,7 @@ public class TimeRecorder : MonoBehaviour
 
 
     Rigidbody getrb() { //returns null if no rb
-        if(attachedTransform.gameObject.GetComponent<Rigidbody>() == null) {
-            return null;
-        } else {
-            return attachedTransform.gameObject.GetComponent<Rigidbody>();
-        }
-
+        return attachedRB;
     }
 
 }
